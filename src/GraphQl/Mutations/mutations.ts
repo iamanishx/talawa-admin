@@ -702,6 +702,16 @@ export const RESET_COMMUNITY = gql`
   }
 `;
 
+export const PRESIGNED_URL = gql(`
+  mutation createPresignedUrl($input: MutationCreatePresignedUrlInput!) {
+    createPresignedUrl(input: $input) {
+      fileUrl
+      presignedUrl
+      objectName
+    }
+  }
+`);
+
 export const DONATE_TO_ORGANIZATION = gql`
   mutation donate(
     $userId: ID!
