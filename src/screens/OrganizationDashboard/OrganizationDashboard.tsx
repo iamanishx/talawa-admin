@@ -68,7 +68,7 @@ function OrganizationDashboard(): JSX.Element {
   const postsLink = `/orgpost/${orgId}`;
   const eventsLink = `/orgevents/${orgId}`;
   // const blockUserLink = `/blockuser/${orgId}`;
-  // const requestLink = '/requests';
+  const requestLink = '/requests';
 
   /**
    * Query to fetch organization data.
@@ -320,15 +320,15 @@ function OrganizationDashboard(): JSX.Element {
                 sm={4}
                 role="button"
                 className="mb-4"
-                // onClick={(): void => {
-                //   navigate(requestLink);
-                // }}
+                onClick={(): void => {
+                  navigate(requestLink);
+                }}
               >
-                {/* <DashBoardCard
-                  count={data?.organizations[0].membershipRequests?.length}
+                {<DashBoardCard
+                  // count={data?.organizations[0].membershipRequests?.length}
                   title={tCommon('requests')}
                   icon={<UsersIcon fill="var(--bs-primary)" />}
-                /> */}
+                />}
               </Col>
             </Row>
           )}
@@ -377,7 +377,7 @@ function OrganizationDashboard(): JSX.Element {
                     variant="light"
                     data-testid="viewAllPosts"
                     className=""
-                    // onClick={(): void => navigate(postsLink)}
+                  // onClick={(): void => navigate(postsLink)}
                   >
                     {t('viewAll')}
                   </Button>
@@ -419,52 +419,32 @@ function OrganizationDashboard(): JSX.Element {
         </Col>
         <Col xl={4}>
           <Row className="mb-4">
-            <Card border="0" className="rounded-4" style={{ height: '220px' }}>
+            {/* <Card border="0" className="rounded-4" style={{ height: '220px' }}>
               <div className={styles.cardHeader}>
-                <div className={styles.cardTitle}>
-                  {t('membershipRequests')}
-                </div>
-                <Button
-                  size="sm"
-                  variant="light"
-                  data-testid="viewAllMembershipRequests"
-                  onClick={(): void => {
-                    toast.success('Coming soon!');
-                  }}
-                >
+                <div className={styles.cardTitle}>{t('membershipRequests')}</div>
+                <Button size="sm" variant="light" data-testid="viewAllMembershipRequests"
+                  onClick={(): void => { toast.success('Coming soon!'); }}>
                   {t('viewAll')}
                 </Button>
               </div>
-              {/* <Card.Body */}
-              {/* className={styles.containerBody} */}
-              {/* style={{ height: '150px' }} */}
-              {/* > */}
-              {/* {loadingOrgData ? ( */}
-              {/* [...Array(4)].map((_, index) => { */}
-              {/* return <CardItemLoading key={`requestsLoading_${index}`} />; */}
-              {/* }) */}
-              {/* ) : data?.organizations[0].membershipRequests.length == 0 ? ( */}
-              <div
-                className={styles.emptyContainer}
-                style={{ height: '150px' }}
-              >
-                <h6>{t('noMembershipRequests')}</h6>
-              </div>
-              {/* ) : ( */}
-              {/* data?.organizations[0]?.membershipRequests */}
-              {/* .slice(0, 8) */}
-              {/* .map((request) => { */}
-              {/* return ( */}
-              {/* <CardItem */}
-              {/* type="MembershipRequest" */}
-              {/* key={request._id} */}
-              {/* title={`${request.user.firstName} ${request.user.lastName}`} */}
-              {/* /> */}
-              {/* ); */}
-              {/* }) */}
-              {/* )} */}
-              {/* </Card.Body> */}
-            </Card>
+              <Card.Body className={styles.containerBody} style={{ height: '150px' }}>
+                {loadingOrgData ? (
+                  [...Array(4)].map((_, index) => <CardItemLoading key={`requestsLoading_${index}`} />)
+                ) : data?.organizations[0].membershipRequests.length == 0 ? (
+                  <div className={styles.emptyContainer} style={{ height: '150px' }}>
+                    <h6>{t('noMembershipRequests')}</h6>
+                  </div>
+                ) : (
+                  data?.organizations[0]?.membershipRequests.slice(0, 8).map((request) => (
+                    <CardItem
+                      type="MembershipRequest"
+                      key={request._id}
+                      title={`${request.user.firstName} ${request.user.lastName}`}
+                    />
+                  ))
+                )}
+              </Card.Body>
+            </Card> */}
           </Row>
           <Row>
             <Card border="0" className="rounded-4">
@@ -474,7 +454,7 @@ function OrganizationDashboard(): JSX.Element {
                   size="sm"
                   variant="light"
                   data-testid="viewAllLeadeboard"
-                  // onClick={(): void => navigate(leaderboardLink)}
+                // onClick={(): void => navigate(leaderboardLink)}
                 >
                   {t('viewAll')}
                 </Button>
