@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { ApolloError, useQuery } from '@apollo/client';
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Card } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
@@ -9,6 +9,7 @@ import {
   GET_ORGANIZATION_POSTS_COUNT_PG,
   GET_ORGANIZATION_EVENTS_PG,
   GET_ORGANIZATION_POSTS_PG,
+  ORGANIZATIONS_LIST,
 } from 'GraphQl/Queries/Queries';
 import AdminsIcon from 'assets/svgs/admin.svg?react';
 // import BlockedUsersIcon from 'assets/svgs/blockedUser.svg?react';
@@ -31,6 +32,7 @@ import type {
   InterfaceOrganizationPg,
   InterfaceOrganizationEventsConnectionEdgePg,
   InterfaceOrganizationPostsConnectionEdgePg,
+  InterfaceQueryOrganizationsListObject,
 } from 'utils/interfaces';
 import styles from 'style/app.module.css';
 // import { VOLUNTEER_RANKING } from 'GraphQl/Queries/EventVolunteerQueries';
@@ -68,12 +70,24 @@ function OrganizationDashboard(): JSX.Element {
   const postsLink = `/orgpost/${orgId}`;
   const eventsLink = `/orgevents/${orgId}`;
   // const blockUserLink = `/blockuser/${orgId}`;
-  const requestLink = '/requests';
+  const requestLink = '/requests/${orgId}';
 
   /**
-   * Query to fetch organization data.
-   */
-  // const {
+ * Query to fetch organization data.
+ */
+const {
+  data,
+  loading: loadingOrgData,
+  error: errorOrg,
+}: {
+  data?: {
+    organizations: InterfaceQueryOrganizationsListObject[];
+  };
+  loading: boolean;
+  error?: ApolloError;
+} = useQuery(ORGANIZATIONS_LIST, {
+  variables: { id: orgId },
+});
 
   const hasFetchedAllMembers = useRef(false);
   const hasFetchedAllEvents = useRef(false);
@@ -325,7 +339,7 @@ function OrganizationDashboard(): JSX.Element {
                 }}
               >
                 {<DashBoardCard
-                  // count={data?.organizations[0].membershipRequests?.length}
+                   count={data?.organizations[0].membershipRequests?.length}
                   title={tCommon('requests')}
                   icon={<UsersIcon fill="var(--bs-primary)" />}
                 />}
@@ -367,7 +381,6 @@ function OrganizationDashboard(): JSX.Element {
                 </Card.Body>
               </Card>
             </Col>
-
             <Col lg={6} className="mb-4 ">
               <Card className="rounded-4 border-2 border-gray-300">
                 <div className={styles.cardHeader}>
@@ -419,11 +432,11 @@ function OrganizationDashboard(): JSX.Element {
         </Col>
         <Col xl={4}>
           <Row className="mb-4">
-            {/* <Card border="0" className="rounded-4" style={{ height: '220px' }}>
+            <Card border="0" className="rounded-4" style={{ height: '220px' }}>
               <div className={styles.cardHeader}>
                 <div className={styles.cardTitle}>{t('membershipRequests')}</div>
                 <Button size="sm" variant="light" data-testid="viewAllMembershipRequests"
-                  onClick={(): void => { toast.success('Coming soon!'); }}>
+                  onClick={(): void => { navigate(requestLink); }}>
                   {t('viewAll')}
                 </Button>
               </div>
@@ -444,7 +457,7 @@ function OrganizationDashboard(): JSX.Element {
                   ))
                 )}
               </Card.Body>
-            </Card> */}
+            </Card>
           </Row>
           <Row>
             <Card border="0" className="rounded-4">

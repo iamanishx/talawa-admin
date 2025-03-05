@@ -114,11 +114,11 @@ const Requests = (): JSX.Element => {
   }, [orgsData]);
 
   // Redirect to orgList page if the user is not an admin
-  useEffect(() => {
-    if (userRole != 'ADMIN' && userRole != 'SUPERADMIN') {
-      window.location.assign('/orglist');
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userRole != 'ADMIN' && userRole != 'SUPERADMIN') {
+  //     window.location.assign('/orglist');
+  //   }
+  // }, []);
 
   // Manage the loading state
   useEffect(() => {
