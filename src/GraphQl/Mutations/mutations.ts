@@ -770,3 +770,13 @@ export const PRESIGNED_URL = gql`
     }
   }
 `;
+
+
+export const GET_FILE_PRESIGNEDURL = gql`
+  mutation CreateGetfileUrl($input: CreateGetfileUrlInput!) {
+    createGetfileUrl(input: $input) {
+      presignedUrl
+    }
+  }
+`;
+
