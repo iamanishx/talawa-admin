@@ -69,7 +69,7 @@ import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
 import useLocalStorage from 'utils/useLocalstorage';
 import styles from 'style/app-fixed.module.css';
-import convertToBase64 from 'utils/convertToBase64';
+import { useMinioUpload } from 'utils/MinioUpload';
 import Carousel from 'react-multi-carousel';
 import { TAGS_QUERY_DATA_CHUNK_SIZE } from 'utils/organizationTagsUtils';
 import 'react-multi-carousel/lib/styles.css';
@@ -101,8 +101,8 @@ export default function home(): JSX.Element {
   const [pinnedPosts, setPinnedPosts] = useState([]);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [postImg, setPostImg] = useState<string | null>('');
-
+  const [fileInfo, setFileInfo] = useState<{ objectName: string; fileHash: string } | null>(null);
+  const { uploadFileToMinio } = useMinioUpload();
   // Fetching the organization ID from URL parameters
   const { orgId } = useParams();
 
@@ -268,11 +268,20 @@ export default function home(): JSX.Element {
                     onChange={async (
                       e: React.ChangeEvent<HTMLInputElement>,
                     ): Promise<void> => {
-                      setPostImg('');
+                      setFileInfo(null);
                       const target = e.target as HTMLInputElement;
                       const file = target.files && target.files[0];
-                      const base64file = file && (await convertToBase64(file));
-                      setPostImg(base64file);
+
+                      if (file && orgId) {
+                        try {
+                          // Upload to Minio and get the object name
+                          const uploadInfo = await uploadFileToMinio(file, orgId);
+                          setFileInfo(uploadInfo);
+                        } catch (error) {
+                          console.error('Error uploading file:', error);
+                          // Handle error appropriately
+                        }
+                      }
                     }}
                   />
                 </Col>
@@ -349,7 +358,7 @@ export default function home(): JSX.Element {
             fetchPosts={refetch}
             userData={user}
             organizationId={orgId}
-            img={postImg}
+            fileInfo={fileInfo} 
           />
         </div>
       </div>

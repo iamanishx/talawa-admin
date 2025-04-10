@@ -46,7 +46,7 @@ interface InterfaceStartPostModalProps {
   fetchPosts: () => void;
   userData: InterfaceQueryUserListItem | undefined;
   organizationId: string;
-  img: string | null;
+  fileInfo: { objectName: string; fileHash: string } | null;
 }
 
 const startPostModal = ({
@@ -55,7 +55,7 @@ const startPostModal = ({
   fetchPosts,
   userData,
   organizationId,
-  img,
+  fileInfo,
 }: InterfaceStartPostModalProps): JSX.Element => {
   // Translation hook for internationalization
   const { t } = useTranslation('translation', { keyPrefix: 'home' });
@@ -99,7 +99,7 @@ const startPostModal = ({
           title: '',
           text: postContent,
           organizationId: organizationId,
-          file: img,
+          file: fileInfo,
         },
       });
 
@@ -159,9 +159,12 @@ const startPostModal = ({
             placeholder={t('somethingOnYourMind')}
             value={postContent}
           />
-          {img && (
+          {fileInfo && (
             <div className={styles.previewImage}>
-              <Image src={img} alt="Post Image Preview" />
+              <Image
+                src={`Preview will be available after upload`}
+                alt="Post Image Preview"
+              />
             </div>
           )}
         </Modal.Body>
