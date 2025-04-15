@@ -46,7 +46,10 @@ interface InterfaceStartPostModalProps {
   fetchPosts: () => void;
   userData: InterfaceQueryUserListItem | undefined;
   organizationId: string;
-  fileInfo: { objectName: string; fileHash: string } | null;
+  fileInfo: {
+    mimeType: string;
+    fileName: string | undefined; objectName: string; fileHash: string 
+} | null;
 }
 
 const startPostModal = ({
@@ -93,16 +96,23 @@ const startPostModal = ({
         throw new Error("Can't create a post with an empty body.");
       }
       toast.info('Processing your post. Please wait.');
-
+  
+      // Build the attachment array if fileInfo exists
+      const attachments = fileInfo ? [{
+        mimetype: "IMAGE_PNG",
+        objectName: fileInfo.objectName,
+        name: fileInfo.fileName || fileInfo.objectName.split('/').pop() || "uploaded-file",
+        fileHash: fileInfo.fileHash
+      }] : [];
       const { data } = await createPost({
         variables: {
-          title: '',
-          text: postContent,
-          organizationId: organizationId,
-          file: fileInfo,
+          input: {
+            caption: postContent,
+            organizationId: organizationId,
+            attachments: attachments
+          }
         },
       });
-
       if (data) {
         toast.dismiss();
         toast.success(t('postNowVisibleInFeed') as string);

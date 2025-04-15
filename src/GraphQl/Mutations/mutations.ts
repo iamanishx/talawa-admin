@@ -445,11 +445,14 @@ export const CREATE_POST_MUTATION = gql`
       id
       caption
       pinnedAt
-      attachments {
-        url
-      }
-      createdAt
       updatedAt
+      attachments {
+        id
+        name
+        mimeType
+        objectName
+        fileHash
+      }
     }
   }
 `;
@@ -769,7 +772,6 @@ export {
 export const PRESIGNED_URL = gql`
   mutation createPresignedUrl($input: MutationCreatePresignedUrlInput!) {
     createPresignedUrl(input: $input) {
-      fileUrl
       presignedUrl
       objectName
       requiresUpload

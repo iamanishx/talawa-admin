@@ -65,7 +65,7 @@ import StartPostModal from 'components/UserPortal/StartPostModal/StartPostModal'
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-
+import { toast } from 'react-toastify';
 import { Navigate, useParams } from 'react-router-dom';
 import useLocalStorage from 'utils/useLocalstorage';
 import styles from 'style/app-fixed.module.css';
@@ -101,7 +101,12 @@ export default function home(): JSX.Element {
   const [pinnedPosts, setPinnedPosts] = useState([]);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [fileInfo, setFileInfo] = useState<{ objectName: string; fileHash: string } | null>(null);
+  const [fileInfo, setFileInfo] = useState<{
+    objectName: string;
+    fileHash: string;
+    fileName: string;
+    mimeType: string;
+  } | null>(null);
   const { uploadFileToMinio } = useMinioUpload();
   // Fetching the organization ID from URL parameters
   const { orgId } = useParams();
@@ -265,21 +270,23 @@ export default function home(): JSX.Element {
                     className={styles.inputField}
                     data-testid="postImageInput"
                     autoComplete="off"
-                    onChange={async (
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): Promise<void> => {
+                    onChange={async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
                       setFileInfo(null);
                       const target = e.target as HTMLInputElement;
                       const file = target.files && target.files[0];
 
                       if (file && orgId) {
                         try {
-                          // Upload to Minio and get the object name
+                          const fileName = file.name;
+                          const mimeType = file.type;
                           const uploadInfo = await uploadFileToMinio(file, orgId);
-                          setFileInfo(uploadInfo);
+                          setFileInfo({
+                            ...uploadInfo,
+                            fileName,
+                            mimeType
+                          });
                         } catch (error) {
-                          console.error('Error uploading file:', error);
-                          // Handle error appropriately
+                            toast.error('Failed to upload image. Please try again.');
                         }
                       }
                     }}
@@ -358,7 +365,7 @@ export default function home(): JSX.Element {
             fetchPosts={refetch}
             userData={user}
             organizationId={orgId}
-            fileInfo={fileInfo} 
+            fileInfo={fileInfo}
           />
         </div>
       </div>
